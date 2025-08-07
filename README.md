@@ -14,7 +14,7 @@
 > ```
 > This will load the saved model and run inference.
 >
-> Works on Google Colab.
+> Works on [Google Colab](https://colab.research.google.com/drive/1Ga4Dfy-MdxZLiOQcGH00z1-9wms0zrse?usp=sharing).
 
 ---
 
