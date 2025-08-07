@@ -10,7 +10,6 @@ from typing import List, Optional, Tuple
 import warnings
 import os
 import pickle
-import argparse
 from tqdm import tqdm
 warnings.filterwarnings('ignore')
 
@@ -30,17 +29,17 @@ def set_seed(seed: int = 42):
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    print(f"�� Set all seeds to {seed}")
+    print(f" Set all seeds to {seed}")
 
 class TextGenerator:
     """Text generation class for the trained model"""
     
-    def __init__(self, model_path: str, tokenizer_path: str = "HuggingFaceTB/SmolLM-135M", device: str = "auto"):
+    def __init__(self, model_path: str = "final_model.pt", tokenizer_path: str = "HuggingFaceTB/SmolLM-135M", device: str = "auto"):
         """
         Initialize the text generator
         
         Args:
-            model_path: Path to the saved model checkpoint
+            model_path: Path to the saved model checkpoint (default: final_model.pt)
             tokenizer_path: Path to the tokenizer (default uses the same as training)
             device: Device to run inference on ("auto", "cpu", "cuda")
         """
@@ -249,13 +248,13 @@ def interactive_mode(generator: TextGenerator):
     
     while True:
         try:
-            prompt = input("\n�� Enter your prompt: ").strip()
+            prompt = input("\n Enter your prompt: ").strip()
             
             if prompt.lower() == 'quit':
                 print("👋 Goodbye!")
                 break
             elif prompt.lower() == 'help':
-                print("\n�� Available commands:")
+                print("\n Available commands:")
                 print("  help - Show this help message")
                 print("  quit - Exit the program")
                 print("  settings - Show current generation settings")
@@ -285,7 +284,7 @@ def interactive_mode(generator: TextGenerator):
             if not prompt:
                 continue
             
-            print(f"\n�� Generating text...")
+            print(f"\n Generating text...")
             generated_texts = generator.generate(
                 prompt=prompt,
                 max_length=100,
@@ -296,7 +295,7 @@ def interactive_mode(generator: TextGenerator):
                 num_return_sequences=1
             )
             
-            print(f"\n�� Generated text:")
+            print(f"\n✨ Generated text:")
             print("-" * 40)
             for i, text in enumerate(generated_texts, 1):
                 print(f"{i}. {text}")
@@ -309,65 +308,18 @@ def interactive_mode(generator: TextGenerator):
             print(f"❌ Error: {e}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Text generation with trained Qwen3-like model")
-    parser.add_argument("--model_path", type=str, required=True, help="Path to the saved model checkpoint")
-    parser.add_argument("--prompt", type=str, help="Text prompt for generation")
-    parser.add_argument("--max_length", type=int, default=100, help="Maximum length of generated text")
-    parser.add_argument("--temperature", type=float, default=0.8, help="Sampling temperature")
-    parser.add_argument("--top_p", type=float, default=0.9, help="Nucleus sampling parameter")
-    parser.add_argument("--top_k", type=int, default=50, help="Top-k sampling parameter")
-    parser.add_argument("--num_sequences", type=int, default=1, help="Number of sequences to generate")
-    parser.add_argument("--greedy", action="store_true", help="Use greedy decoding instead of sampling")
-    parser.add_argument("--interactive", action="store_true", help="Run in interactive mode")
-    parser.add_argument("--perplexity", type=str, help="Calculate perplexity of the given text")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed")
-    parser.add_argument("--device", type=str, default="auto", help="Device to use (auto/cpu/cuda)")
-    
-    args = parser.parse_args()
-    
     # Set seed
-    set_seed(args.seed)
+    set_seed(42)
     
-    # Initialize generator
+    # Initialize generator with default settings
     try:
-        generator = TextGenerator(args.model_path, device=args.device)
+        generator = TextGenerator("final_model.pt")
     except Exception as e:
         print(f"❌ Failed to load model: {e}")
         return
     
-    # Interactive mode
-    if args.interactive:
-        interactive_mode(generator)
-        return
-    
-    # Perplexity calculation
-    if args.perplexity:
-        perplexity = generator.get_perplexity(args.perplexity)
-        print(f"📊 Perplexity: {perplexity:.2f}")
-        return
-    
-    # Single generation
-    if args.prompt:
-        print(f"🎯 Generating text for prompt: '{args.prompt}'")
-        print(f"⚙️ Settings: temp={args.temperature}, top_p={args.top_p}, top_k={args.top_k}")
-        
-        generated_texts = generator.generate(
-            prompt=args.prompt,
-            max_length=args.max_length,
-            temperature=args.temperature,
-            top_p=args.top_p,
-            top_k=args.top_k,
-            do_sample=not args.greedy,
-            num_return_sequences=args.num_sequences
-        )
-        
-        print(f"\n�� Generated text:")
-        print("=" * 50)
-        for i, text in enumerate(generated_texts, 1):
-            print(f"{i}. {text}")
-        print("=" * 50)
-    else:
-        print("❌ No prompt provided. Use --prompt or --interactive")
+    # Run interactive mode
+    interactive_mode(generator)
 
 if __name__ == "__main__":
     main() 
