@@ -1,5 +1,8 @@
 # Code & Train GPT-5 - Step by Step
 
+- [YouTube video](https://youtu.be/xzCJpWliUE0)
+- [Bilibili video](https://www.bilibili.com/video/BV1yft6zGErW/)
+
 > **To train the model:**
 > 
 > ```bash
