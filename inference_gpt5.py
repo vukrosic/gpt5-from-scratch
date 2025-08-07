@@ -17,7 +17,7 @@ warnings.filterwarnings('ignore')
 # Import the model classes from the training file
 import sys
 sys.path.append('.')
-from base_llm_gqa import (
+from train_gpt5 import (
     ModelConfig, MinimalLLM, Rotary, Qwen3Attention, 
     SwiGLUFeedForward, TransformerBlock, repeat_kv
 )
