@@ -11,6 +11,7 @@ import warnings
 import os
 import pickle
 from tqdm import tqdm
+import torch.serialization
 warnings.filterwarnings('ignore')
 
 # Import the model classes from the training file
@@ -78,7 +79,16 @@ class TextGenerator:
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model checkpoint not found: {model_path}")
         
-        checkpoint = torch.load(model_path, map_location=self.device)
+        # Add ModelConfig to safe globals for PyTorch 2.6+ compatibility
+        torch.serialization.add_safe_globals([ModelConfig])
+        
+        try:
+            # Try loading with weights_only=True first (PyTorch 2.6+ default)
+            checkpoint = torch.load(model_path, map_location=self.device, weights_only=True)
+        except Exception as e:
+            print(f"⚠️  weights_only=True failed, trying weights_only=False: {e}")
+            # Fallback to weights_only=False for older checkpoints
+            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
         
         # Extract config and create model
         config = checkpoint['config']
