@@ -35,7 +35,7 @@ class ModelConfig:
     n_layers: int = 6
     d_ff: int = 1536
     batch_size: int = 24
-    max_steps: int = 5000
+    max_steps: int = 200
 
     # Qwen3-like parameters
     n_kv_heads: int = 4  # For Grouped-Query Attention
