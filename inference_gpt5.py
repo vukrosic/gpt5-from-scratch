@@ -205,6 +205,11 @@ class TextGenerator:
                 else:
                     next_token = torch.argmax(next_token_logits, dim=-1, keepdim=True)
                 
+                # Ensure next_token has the correct shape for concatenation
+                # next_token should be (1, 1) to match current_ids shape (1, seq_len)
+                if next_token.dim() == 1:
+                    next_token = next_token.unsqueeze(0)
+                
                 # Check for stop tokens
                 if next_token.item() in stop_token_ids:
                     break
