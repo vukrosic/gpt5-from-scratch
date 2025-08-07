@@ -1,5 +1,23 @@
 # Code & Train GPT-5 - Step by Step
 
+> **To train the model:**
+> 
+> ```bash
+> python train_gpt5.py
+> ```
+> This will save the trained model.
+>
+> **To run inference:**
+>
+> ```bash
+> python inference_gpt5.py
+> ```
+> This will load the saved model and run inference.
+>
+> Works on Google Colab.
+
+---
+
 GPT-5 is not open sourced, however, we can make an educated guess on how it's built:
 - **GPT architecture + latest advancements in LLM pretraining**
 
